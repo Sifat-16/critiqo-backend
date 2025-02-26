@@ -35,7 +35,7 @@ public class Profile {
     @Column(columnDefinition = "TEXT")
     private String address;
 
-    @Column(length = 15, unique = false)
+    @Column(length = 15)
     @Size(min = 10, max = 15, message = "Contact number must be between 10 and 15 characters")
     private String contactNumber;
 
@@ -45,8 +45,7 @@ public class Profile {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(mappedBy = "profile")
     private User user;
 
     @CreationTimestamp
