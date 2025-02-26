@@ -16,12 +16,23 @@ public class JwtService {
 
     private static final String SECRET_KEY = "1705ebdf3523cf59a1bdba4428f5fe828ad2d9bfb207c47f2fcb44665ed3b0c0";
 
-    public String generateToken(String subject){
+    public String generateAccessToken(String subject){
         return Jwts.builder()
                 .claims()
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() * 1000 * 60 * 50))
+                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 5)))
+                .and()
+                .signWith(getSignedKey())
+                .compact();
+    }
+
+    public String generateRefreshToken(String subject){
+        return Jwts.builder()
+                .claims()
+                .subject(subject)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60* 24* 3)))
                 .and()
                 .signWith(getSignedKey())
                 .compact();
@@ -56,12 +67,13 @@ public class JwtService {
     }
 
     public Boolean isTokenExpired(String token) {
-        return extractTokenExpirationTime(token).before(new Date());
+        Date expirationTime = extractTokenExpirationTime(token);
+        Date now = new Date();
+        return expirationTime.before(now);
     }
 
     public boolean isValidToken(String token, UserDetails userDetails) {
         String username = extractUsername(token);
-
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 }

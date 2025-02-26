@@ -1,5 +1,6 @@
 package com.critiqo.critiqo_backend.response.api;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ApiResponse<T> {
+public class ErrorResponse {
     String message;
-    T data;
+    Object error;
 }

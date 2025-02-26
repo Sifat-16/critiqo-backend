@@ -7,14 +7,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -28,6 +31,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "critiqo_user")
+@Builder
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -56,34 +60,25 @@ public class User implements UserDetails {
     private UserRole userRole;
 
 
+
     @PrePersist
     public void prepare(){
-        generatePassword();
         createProfile();
     }
 
-    public void generatePassword() {
-        if (this.password == null || this.password.isEmpty()) {
-            this.password = generateRandomPassword(12); // Generate a 12-character random password
-        }
-    }
+
 
 
     public void createProfile(){
         if (this.profile == null) {
             this.profile = new Profile();
-            this.profile.setEmail(this.email); // Copy email from User
+            this.profile.setEmail(this.email);
             this.profile.setUser(this); // Link Profile to User
         }
     }
 
 
-    private String generateRandomPassword(int length) {
-        SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[length];
-        random.nextBytes(bytes);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(0, length);
-    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

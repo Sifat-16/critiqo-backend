@@ -1,6 +1,7 @@
 package com.critiqo.critiqo_backend.model.profile;
 
 import com.critiqo.critiqo_backend.model.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -28,8 +29,7 @@ public class Profile {
     @NotBlank(message = "Email is required")
     private String email;
 
-    @Column(nullable = false, length = 100)
-    @NotBlank(message = "Name is required")
+    @Column(length = 100)
     private String name;
 
     @Column(columnDefinition = "TEXT")
@@ -46,6 +46,7 @@ public class Profile {
     private String bio;
 
     @OneToOne(mappedBy = "profile")
+    @JsonIgnore
     private User user;
 
     @CreationTimestamp

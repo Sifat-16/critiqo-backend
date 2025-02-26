@@ -1,6 +1,6 @@
 package com.critiqo.critiqo_backend.model.user;
 
-enum UserRole{
+public enum UserRole{
     USER,
     ADMIN,
 }
